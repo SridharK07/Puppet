@@ -3,14 +3,14 @@ Some of these require plugins/agents to be installed.  See https://docs.puppetla
 
 ## Finding, listing, pinging
 
-** List all
+# List all
 mco find
 
-** Ping
+# Ping
 mco ping
 mco ping -I test01
 
-** Regex, e.g. any hosts with name matching "test"
+# Regex, e.g. any hosts with name matching "test"
 mco ping -I /test/
 
 
@@ -22,8 +22,11 @@ mco service elasticsearch restart -I test01
 mco package status package=bash
 mco package install package=postgres
 
-** Yum
-See https://github.com/slaney/mcollective-plugins for a yum-centric package plugin.
+# Yum
+# https://github.com/slaney/mcollective-plugins for a yum-centric package plugin.
 
 mco rpc yum update package=elasticsearch -I foo01
 
+# File
+# https://raw.githubusercontent.com/puppetlabs/mcollective-filemgr-agent/master/agent/filemgr.ddl
+mco rpc filemgr status file=/etc/puppet/puppet.conf
