@@ -1,0 +1,29 @@
+# Cheat sheet for the mco command
+Some of these require plugins/agents to be installed.  See https://docs.puppetlabs.com/mcollective/deploy/plugins.html
+
+## Finding, listing, pinging
+
+** List all
+mco find
+
+** Ping
+mco ping
+mco ping -I test01
+
+** Regex, e.g. any hosts with name matching "test"
+mco ping -I /test/
+
+
+## Service
+mco service snmpd status
+mco service elasticsearch restart -I test01
+
+## Package
+mco package status package=bash
+mco package install package=postgres
+
+** Yum
+See https://github.com/slaney/mcollective-plugins for a yum-centric package plugin.
+
+mco rpc yum update package=elasticsearch -I foo01
+
