@@ -1,32 +1,102 @@
-# Cheat sheet for the mco command
-Some of these require plugins/agents to be installed.  See https://docs.puppetlabs.com/mcollective/deploy/plugins.html
+# MCollective Cheat Sheet
 
-## Finding, listing, pinging
+MCollective is a server orchestration tool that is built by Puppet Labs and so is tightly integrated with the puppet infrastructure. Commands a run from the control aka "client" server.  
 
-# List all
+## Finding/listing hosts
+
+List all
+
+```
 mco find
+```
 
-# Ping
+With specific puppet classes
+
+```
+mco find --with-class apache
+mco find --with-class postgres::server
+```
+
+With specific fact values
+
+```
+mco find --with-fact is_virtual=true --with-fact 'processorcount >= 12'
+```
+
+## Ping
+
 mco ping
-mco ping -I test01
+You can use the same filters as shown above with mco find.
 
-# Regex, e.g. any hosts with name matching "test"
+Ping all servers containing "test" in their name
+
+```
 mco ping -I /test/
-
+```
 
 ## Service
-mco service snmpd status
-mco service elasticsearch restart -I test01
 
-## Package
-mco package status package=bash
-mco package install package=postgres
+Who's running apache?
 
-# Yum
-# https://github.com/slaney/mcollective-plugins for a yum-centric package plugin.
+```
+mco service httpd status
+```
 
-mco rpc yum update package=elasticsearch -I foo01
+Restart a service on all, but avoid thundering herd by splaying in batches, e.g. 3 at a time
 
-# File
-# https://raw.githubusercontent.com/puppetlabs/mcollective-filemgr-agent/master/agent/filemgr.ddl
-mco rpc filemgr status file=/etc/puppet/puppet.conf
+```
+mco service puppet restart --batch 3 --batch-sleep 3
+```
+
+
+## Process
+
+```
+mco process list elasticsearch
+mco process list jboss
+mco process list httpd
+```
+
+## File
+
+Create a file /tmp/fooj on test12
+
+```
+mco puppet resource file /tmp/fooj ensure=file mode=0440 owner=root -I test12
+```
+
+The filemgr command is probably more suited for file management tasks.  See https://github.com/puppetlabs/mcollective-filemgr-agent
+
+Directory listing
+
+```
+mco rpc filemgr status dirlist=true file=/usr/local/java
+```
+
+## Yum
+
+See https://github.com/slaney/mcollective-plugins
+
+``` 
+sudo mco rpc yum install package=telnet
+sudo mco rpc yum update package=rkhunter
+```
+
+## Puppet
+
+If you care about the graphs displayed in summary, you'll need to set your putty encoding to utf-8 and use a font like DejaVu.
+
+```
+mco puppet summary
+mco puppet count
+mco puppet status
+```
+
+Invoke a puppet run on a specific server
+
+```
+mco puppet runonce -I test02
+```
+
+It's OK to do puppet runonce on multiple hosts.  By default, puppet will splay its runs to avoid a thundering herd.
+
